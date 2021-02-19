@@ -1,5 +1,4 @@
 //paquetes
-var mongodb = require('mongoose');
 var mongodb = require('mongodb');
 var ObjectID = mongodb.ObjectID;
 var crypto = require('crypto');
