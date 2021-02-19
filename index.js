@@ -1,137 +1,33 @@
-// paquetes
-const mongodb = require('mongodb');
-
-const { ObjectID } = mongodb;
-const crypto = require('crypto');
 const express = require('express');
-const bodyParser = require('body-parser');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const db = require('./database/index');
+const routes = require('./routes/routes');
 
-// utilidades para password
-
-const genRandomString = function (length) {
-  return crypto
-    .randomBytes(Math.ceil(length / 2))
-    .toString('hex') /* convierte a hexadecimal la contra */
-    .slice(0, length);
-};
-
-const sha512 = function (password, salt) {
-  const hash = crypto.createHmac('sha512', salt);
-  hash.update(password);
-  const value = hash.digest('hex');
-  return {
-    salt,
-    passwordHash: value,
-  };
-};
-
-function saltHashPassword(userPassword) {
-  const salt = genRandomString(16); // crea 16 carácteres random
-  const passwordData = sha512(userPassword, salt);
-  return passwordData;
-}
-
-function checkHashPassword(userPassword, salt) {
-  const passwordData = sha512(userPassword, salt);
-  return passwordData;
-}
-
-// Servicios para Express
+const { log } = console;
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-// MongoDB client
-const { MongoClient } = mongodb;
-app.set('port', process.env.PORT || 3000);
-// URL
+app.use(cors());
 
-const url =
-  'mongodb+srv://dodiadm:propet2020@clusterdodi0.88y2o.mongodb.net/dodi?retryWrites=true&w=majority';
+// Configure express to recieve JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-MongoClient.connect(
-  url,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  (err, client) => {
-    if (err)
-      console.log('No es posible conectarse con server mongoDB.ERROR', err);
-    else {
-      // registro
-      app.post('/register', (request, response, next) => {
-        const post_data = request.body;
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // limit each IP to 50 requests per windowMs
+  message: 'Too many requests, please try again after 15 minutes',
+});
 
-        const plaint_password = post_data.password;
-        const hash_data = saltHashPassword(plaint_password);
+app.use(limiter);
 
-        const password = hash_data.passwordHash;
-        const { salt } = hash_data;
-        const { name } = post_data;
-        const { email } = post_data;
-        const insertJson = {
-          email,
-          password,
-          salt,
-          name,
-        };
-        const db = client.db('dodi');
-        // Revisa email creados
+// Route middleware.
+app.use(routes);
 
-        db.collection('users')
-          .find({ email })
-          .count((err, number) => {
-            if (number != 0) {
-              response.json('Este Correo ya existe');
-              console.log('Este Correo ya existe');
-            } else {
-              // insert data
-              db.collection('users').insertOne(insertJson, (error, res) => {
-                response.json('Registro exitoso');
-                console.log('Registro exitoso');
-              });
-            }
-          });
-      });
+app.get('/', (req, res) => res.send('⭐'));
 
-      app.post('/login', (request, response, next) => {
-        const post_data = request.body;
+db.connect();
+app.listen(process.env.PORT || 5000, () => log('Server running'));
 
-        const { email } = post_data;
-        const userPassword = post_data.password;
-
-        const db = client.db('dodi');
-        // Revisa email creados
-
-        db.collection('users')
-          .find({ email })
-          .count((err, number) => {
-            if (number == 0) {
-              response.json('Este Correo no existe');
-              console.log('Este Correo no existe');
-            } else {
-              // insert data
-              db.collection('users').findOne({ email }, (err, user) => {
-                const { salt } = user;
-                const hashed_password = checkHashPassword(userPassword, salt)
-                  .passwordHash;
-                const encrypted_password = user.password;
-                if (hashed_password == encrypted_password) {
-                  response.json('Ingreso exitoso');
-                  console.log('Ingreso exitoso');
-                } else {
-                  response.json('Contraseña incorrecta');
-                  console.log('Contraseña incorrecta');
-                }
-              });
-            }
-          });
-      });
-
-      app.listen(app.get('port'), () => {
-        console.log(
-          'Se ha conectado con server MongoDB, WebService está ejecutandose en el puerto 3000'
-        );
-      });
-    }
-  }
-);
+module.exports = app;
