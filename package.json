@@ -12,8 +12,10 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "express-rate-limit": "^5.2.6",
     "mongo": "^0.1.0",
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.17"
