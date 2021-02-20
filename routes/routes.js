@@ -14,9 +14,16 @@ router.post('/register', async (req, res) => {
   // Crear un nuevo usuario
   const user = new User({
     name: req.body.name,
+    lName: req.body.lName,
     email: req.body.email,
     password: hashedPassword,
-    direction: req.body.direction
+    direction: req.body.direction,
+    pet: req.body.pet,
+    tId: req.body.tId,
+    id: req.body.id,
+    phone: req.body.phone,
+    inPhone: req.body.inPhone,
+
   });
 
   // Guardar usuariio en la base de datos.

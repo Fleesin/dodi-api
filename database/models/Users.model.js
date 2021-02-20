@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  lName:{
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -21,6 +25,27 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  inPhone:{
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: Number,
+    required: true
+  },
+  tId:{
+    type: String,
+    required: true
+  },
+  id:{
+    type: Number,
+    required: true
+  },
+  pet:{
+    type: String,
+    required: true
+  }
+
 });
 
 module.exports = mongoose.model('User', userSchema);
