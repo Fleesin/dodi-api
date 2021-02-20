@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   phone: {
-    type: Number,
+    type: String,
     required: true
   },
   tId:{
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   id:{
-    type: Number,
+    type: String,
     required: true
   },
   pet:{
