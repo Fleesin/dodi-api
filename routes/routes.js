@@ -16,6 +16,7 @@ router.post('/register', async (req, res) => {
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
+    direction: req.body.direction
   });
 
   // Guardar usuariio en la base de datos.
