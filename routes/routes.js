@@ -51,7 +51,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params._id);
     return res.status(200).json(user);
   } catch (error) {
     return res.status(400).json({ error });
