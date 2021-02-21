@@ -25,16 +25,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  phone: {
-    type: String,
-    required: true
-  },
   tId:{
     type: String,
     required: true
   },
   id:{
+    type: String,
+    required: true
+  },
+  phone: {
     type: String,
     required: true
   },
