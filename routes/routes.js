@@ -22,7 +22,6 @@ router.post('/register', async (req, res) => {
     tId: req.body.tId,
     id: req.body.id,
     phone: req.body.phone,
-    inPhone: req.body.inPhone,
 
   });
 
