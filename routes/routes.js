@@ -47,4 +47,21 @@ router.post('/login', async (req, res) => {
   return res.status(200).json('Logged in');
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find({ is_admin: false, is_verified: true });
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
+});
 module.exports = router;
