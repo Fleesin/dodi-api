@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   pet:{
-    type: String,
+    type: Array,
     required: true
   }
 });
