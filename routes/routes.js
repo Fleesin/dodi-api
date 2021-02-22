@@ -44,10 +44,8 @@ router.post('/login', async (req, res) => {
   if (!validPassword)
     return res.status(400).send({ error: 'Email or password is wrong' });
 
-  return res.status(200).json('Logged in');
+  return res.status(200).json(user);
 });
-
-
 
 router.get('/:id', async (req, res) => {
   try {
